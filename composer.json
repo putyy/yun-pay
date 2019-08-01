@@ -1,0 +1,23 @@
+{
+    "name": "putyy/yun-pay",
+    "description": "云账户综合服务平台 API 调用封装",
+    "type": "library",
+    "keywords": ["云账户"],
+    "homepage": "https://github.com/putyy/yun-pay.git",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "putyy",
+            "email": "10945014@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WGCYunPay\\": "src/"
+        }
+    }
+}
