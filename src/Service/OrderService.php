@@ -78,9 +78,9 @@ class OrderService extends BaseService
     }
 
 
-    public function setRef($orderId)
+    public function setRef($ref)
     {
-        $this->orderId = $orderId;
+        $this->ref = $ref;
         return $this;
     }
 
