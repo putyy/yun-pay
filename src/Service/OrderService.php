@@ -142,7 +142,7 @@ class OrderService extends BaseService
     }
 
     protected function callback($res){
-        if(isset($res['data'])){
+        if(isset($res['data']) && is_string($res['data'])){
             $res['data'] = Des3Service::decode($res['data'], $this->config->des3_key);
         }
         return $res;
