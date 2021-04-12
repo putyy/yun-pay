@@ -18,7 +18,7 @@ use WGCYunPay\AbstractInterfaceTrait\ServiceInterface;
 use WGCYunPay\Http\Request;
 use WGCYunPay\Config;
 use WGCYunPay\Service\Des3Service;
-use WGCYunPay\Util\SignUtil;
+use WGCYunPay\Util\RsaUtil;
 
 abstract class BaseService implements ServiceInterface
 {
@@ -38,10 +38,10 @@ abstract class BaseService implements ServiceInterface
      * Date : 2019/7/31 15:29
      * @return mixed
      */
-    abstract protected function getDes3Data();
-    abstract protected function getRequestInfo();
+    abstract protected function getDes3Data(): array;
+    abstract protected function getRequestInfo(): array;
 
-    protected function getHeader()
+    protected function getHeader(): array
     {
         return [
             'Content-Type: application/x-www-form-urlencoded',
@@ -50,7 +50,12 @@ abstract class BaseService implements ServiceInterface
         ];
     }
 
-    protected function getRequestData()
+    /**
+     * 2021/4/9 8:36 上午
+     * @return array
+     * @throws \WGCYunPay\Exception\YunPayException
+     */
+    protected function getRequestData(): array
     {
         $desData  = Des3Service::encode($this->getDes3Data(), $this->config->des3_key);
         $signData              = [];
@@ -58,17 +63,25 @@ abstract class BaseService implements ServiceInterface
         $signData['mess']      = $this->config->mess;
         $signData['timestamp'] = $this->config->timestamp;
         $signData['key']       = $this->config->app_key;
-        $sign    = SignUtil::hmacHash($signData, $this->config->app_key);
+        $rsa = new RsaUtil($this->config);
+        $sign = $rsa->sign($signData);
+
         $postData              = [];
         $postData['data']      = $desData;
         $postData['mess']      = $this->config->mess;
         $postData['timestamp'] = $this->config->timestamp;
         $postData['sign']      = $sign;
-        $postData['sign_type'] = 'sha256';
+        $postData['sign_type'] = 'rsa';
         return $postData;
     }
 
-    public function query($callback = null)
+    /**
+     * 2021/4/9 10:04 上午
+     * @param null $callback
+     * @return mixed
+     * @throws \WGCYunPay\Exception\YunPayException
+     */
+    public function query(?Callable $callback = null)
     {
         $requestData = $this->getRequestData();
         $header      = $this->getHeader();
@@ -83,7 +96,7 @@ abstract class BaseService implements ServiceInterface
             return call_user_func($callback, $data);
         }
 
-        if(method_exists($this, 'callback')){
+        if($data && method_exists($this, 'callback')){
             return call_user_func([$this, 'callback'], $data);
         }
 

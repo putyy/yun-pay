@@ -29,4 +29,11 @@ class StringUtil
         }
         return $code;
     }
+
+    public static function unCame(string $str){
+        $str = preg_replace_callback('/([A-Z]{1})/',function($matches){
+            return '_'.strtolower($matches[0]);
+        },$str);
+        return ltrim($str, '_');
+    }
 }

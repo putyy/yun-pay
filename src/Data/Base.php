@@ -34,7 +34,7 @@ class Base
      * Date : 2019/8/1 13:58
      * @return array
      */
-    public function getRoute()
+    public function getRoute(): array
     {
         return [$this->route, $this->method];
     }

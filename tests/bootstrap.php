@@ -12,3 +12,16 @@
 // +----------------------------------------------------------------------
 require_once __DIR__ . '/../vendor/autoload.php';
 $config = require_once __DIR__ . '/Config/config.php';
+
+//图片转base64
+if(!function_exists('imageToBase64')){
+    function imageToBase64($file)
+    {
+        if ($fp = fopen($file, "rb", 0)) {
+            $res = fread($fp, filesize($file));
+            fclose($fp);
+            //获取图片base64
+            return chunk_split(base64_encode($res));
+        }
+    }
+}

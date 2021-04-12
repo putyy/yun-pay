@@ -23,7 +23,7 @@ trait MethodTypeTrait
      */
     protected $methodType = null;
 
-    public function setMethodType($type)
+    public function setMethodType($type): self
     {
         if(!in_array($type, self::METHOD_ARR))
         {

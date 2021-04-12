@@ -56,4 +56,16 @@ class Config
      * @var string
      */
     public $app_key    = '';
+
+    /**
+     * 商户私钥
+     * @var string
+     */
+    public $private_key = '';
+
+    /**
+     * 云账户公钥
+     * @var string
+     */
+    public $public_key = '';
 }

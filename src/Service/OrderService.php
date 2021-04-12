@@ -14,14 +14,21 @@
 
 namespace WGCYunPay\Service;
 
+use WGCYunPay\AbstractInterfaceTrait\AttributeSetGetTrait;
 use WGCYunPay\AbstractInterfaceTrait\BaseService;
+use WGCYunPay\AbstractInterfaceTrait\DataHandleTrait;
 use WGCYunPay\AbstractInterfaceTrait\MethodTypeTrait;
 use WGCYunPay\Data\Router;
+use WGCYunPay\Exception\YunPayException;
 
 /**
- * 订单相关操作
+ * 2.1 打款相关操作（订单、电子回单、商户余额查询、取消待打款订单）
  * Class OrderService
  * @package WGCYunPay\Service
+ * @method $this setOrderId($orderId)
+ * @method $this setRef($ref)
+ * @method $this setChannel($channel)
+ * @method $this setDataType($dataType)
  */
 class OrderService extends BaseService
 {
@@ -41,9 +48,20 @@ class OrderService extends BaseService
     const  ORDER_FAIL = 'order_fail';
 
     /**
+     * 查询商户余额
+     */
+    const  ACCOUNTS   = 'query_accounts';
+
+
+    /**
+     * 查询商户VA账户信息
+     */
+    const  VA_ACCOUNT = 'va_account';
+
+    /**
      * 请求类型
      */
-    const  METHOD_ARR = [self::REALTIME, self::RECEIPT, self::ORDER_FAIL];
+    const  METHOD_ARR = [self::REALTIME, self::RECEIPT, self::ORDER_FAIL, self::ACCOUNTS, self::VA_ACCOUNT];
 
     /**
      * 商户订单号
@@ -67,29 +85,13 @@ class OrderService extends BaseService
      * 如果为encryption，则对返回的data进⾏ 加密(选填)
      * @var string
      */
-    protected $dataType   = 'encryption';
+    protected $dataType   = '';
 
     use MethodTypeTrait;
 
-    public function setOrderId($orderId)
-    {
-        $this->orderId = $orderId;
-        return $this;
-    }
+    use AttributeSetGetTrait;
 
-
-    public function setRef($ref)
-    {
-        $this->ref = $ref;
-        return $this;
-    }
-
-
-    public function setChannel($channel)
-    {
-        $this->channel = $channel;
-        return $this;
-    }
+    use DataHandleTrait;
 
     /**
      * 根据类型返回数据
@@ -100,35 +102,39 @@ class OrderService extends BaseService
     protected function getDes3Data(): array
     {
         // TODO: Implement getDes3Data() method.
+        $data = [];
         switch ($this->methodType ?? self::REALTIME) {
             case self::REALTIME:
-                $data      = ['order_id' => $this->orderId, 'channel' => $this->channel, 'data_type' => $this->dataType];
+                $data = ['order_id' => $this->orderId, 'channel' => $this->channel, 'data_type' => $this->dataType];
                 break;
             case self::RECEIPT:
-                $data      = ['order_id' => $this->orderId, 'ref' => $this->ref];
+                $data = ['order_id' => $this->orderId, 'ref' => $this->ref];
                 break;
             case self::ORDER_FAIL:
-                $data      = ['dealer_id' => $this->config->dealer_id, 'order_id' => $this->orderId, 'ref' => $this->ref, 'channel' => $this->channel];
+                $data = ['dealer_id' => $this->config->dealer_id, 'order_id' => $this->orderId, 'ref' => $this->ref, 'channel' => $this->channel];
+                break;
+            case self::ACCOUNTS:
+                $data = ['dealer_id' => $this->config->dealer_id];
+                break;
+            case self::VA_ACCOUNT:
+                $data = ['dealer_id' => $this->config->dealer_id, 'broker_id' => $this->config->broker_id];
                 break;
             default:
-                throw new \Exception('not des3Data');
+                YunPayException::throwSelf('not des3Data');
         }
         return $data;
     }
 
-    protected function getRequestInfo()
+    protected function getRequestInfo(): array
     {
         $methodType = $this->methodType ?? self::REALTIME;
-
-        $method = 'get';
+        $method     = 'get';
         if (in_array($methodType, [self::ORDER_FAIL])) {
             $method = 'post';
         }
-
-        $route = Router::QUERY_REALTIME_ORDER;
         switch ($methodType) {
-            case self::REALTIME:
-                $route = Router::QUERY_REALTIME_ORDER;
+            case self::ACCOUNTS:
+                $route = Router::QUERY_ACCOUNTS;
                 break;
             case self::RECEIPT:
                 $route = Router::RECEIPT_FILE;
@@ -136,15 +142,13 @@ class OrderService extends BaseService
             case self::ORDER_FAIL:
                 $route = Router::ORDER_FAIL;
                 break;
+            case self::VA_ACCOUNT:
+                $route = Router::ORDER_AV_ACCOUNT;
+                break;
+            case self::REALTIME:
+            default:
+                $route = Router::QUERY_REALTIME_ORDER;
         }
-
         return [$route, $method];
-    }
-
-    protected function callback($res){
-        if(isset($res['data']) && is_string($res['data'])){
-            $res['data'] = Des3Service::decode($res['data'], $this->config->des3_key);
-        }
-        return $res;
     }
 }

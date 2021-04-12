@@ -1,25 +1,26 @@
 <?php
 // +----------------------------------------------------------------------
-// | Created by PhpStorm.
-// +----------------------------------------------------------------------
-// | user : 放下
+// | Created by LW放下.
 // +----------------------------------------------------------------------
 // | blog : www.putyy.com
 // +----------------------------------------------------------------------
 // | email: 10945014@qq.com
 // +----------------------------------------------------------------------
-// | Date : 2019/7/26 11:28
+// | Date : 2021/4/9 8:33 上午
 // +----------------------------------------------------------------------
 
 
-namespace WGCYunPay\Util;
+namespace WGCYunPay\Exception;
 
-
-class SignUtil
+class YunPayException extends \Exception
 {
-    public static function hmacHash(array $signData, string $key, string $al = 'sha256'): string
+    /**
+     * 2021/4/9 9:10 上午
+     * @param string $message
+     * @throws YunPayException
+     */
+    public static function throwSelf(string $message)
     {
-        $signStr = urldecode(http_build_query($signData));
-        return hash_hmac($al, $signStr, $key);
+        throw new YunPayException($message);
     }
 }

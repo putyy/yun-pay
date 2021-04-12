@@ -28,7 +28,7 @@ Trait DataTrait
         $this->data = $data;
     }
 
-    protected function getDes3Data()
+    protected function getDes3Data(): array
     {
         // TODO: Implement getDes3Data() method.
         $data = [];
@@ -47,7 +47,7 @@ Trait DataTrait
      * Date : 2019/8/1 14:29
      * @return mixed
      */
-    protected function getRequestInfo()
+    protected function getRequestInfo(): array
     {
         return $this->data->getRoute();
     }

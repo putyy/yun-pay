@@ -33,19 +33,19 @@ class Request
         $this->url = Router::getRouter($router);
     }
 
-    public function setTimeout(int $timeout = 30)
+    public function setTimeout(int $timeout = 30): self
     {
         static::$timeout = $timeout;
         return $this;
     }
 
-    public function setHeader(array $header = [])
+    public function setHeader(array $header = []): self
     {
         $this->header = $header;
         return $this;
     }
 
-    public function addHeader(array $header = [])
+    public function addHeader(array $header = []): self
     {
         $this->header = array_merge($this->header, $header);
         return $this;
@@ -57,9 +57,9 @@ class Request
         return $this->output;
     }
 
-    public function getBodyJson()
+    public function getBodyJson(): ?array
     {
-        return json_decode($this->output, true);
+        return $this->output ? json_decode($this->output, true) : null;
     }
 
     public function getHttpInfo()
@@ -68,7 +68,7 @@ class Request
     }
 
 
-    private function curlInit()
+    private function curlInit(): void
     {
         $this->curl_ch = curl_init();
         curl_setopt($this->curl_ch, CURLOPT_URL, $this->url);
@@ -82,12 +82,12 @@ class Request
         }
     }
 
-    private function curlClose()
+    private function curlClose(): void
     {
         curl_close($this->curl_ch);
     }
 
-    public function get(array $data)
+    public function get(array $data): self
     {
         $this->url .= '?'.http_build_query($data);
         $this->curlInit();
@@ -101,7 +101,7 @@ class Request
         return $this;
     }
 
-    public function post(array $data = [])
+    public function post(array $data = []): self
     {
         $this->curlInit();
         curl_setopt($this->curl_ch, CURLOPT_POST, true);

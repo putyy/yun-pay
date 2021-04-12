@@ -15,16 +15,18 @@ namespace WGCYunPay\Data;
 
 class Router
 {
-
-    const SERVICE_URL = 'https://api-jiesuan.yunzhanghu.com';
+    //主要接口
+    const SERVICE_URL     = 'https://api-jiesuan.yunzhanghu.com';
 
     //+----------------------------------
-    //|  打款接⼝
+    //|  打款接⼝ 支付提交地址
     //+----------------------------------
+
     /**
-     * 支付提交地址
+     * 银⾏卡实时下单
      */
     const BANK_CARD = 'api/payment/v1/order-realtime';
+
     const ALI_PAY   = 'api/payment/v1/order-alipay';
     const WX_PAY    = 'api/payment/v1/order-wxpay';
 
@@ -48,16 +50,10 @@ class Router
      */
     const ORDER_FAIL           = 'api/payment/v1/order/fail';
 
-
-    //+----------------------------------
-    //| 税务⻛控
-    //+----------------------------------
-
     /**
-     * 查看⽤户打款⾦额是否超出全⽹⽉限额
-     *
+     * 查询商户VA账户信息
      */
-    const RISK_CHECK_AMOUNT    = 'api/payment/v1/risk-check/amount';
+    const ORDER_AV_ACCOUNT     = 'api/payment/v1/va-account';
 
 
     //+----------------------------------
@@ -70,14 +66,29 @@ class Router
     const ORDER_DOWNLOAD  = 'api/dataservice/v1/order/downloadurl';
 
     /**
-     * 查询⽇流⽔⽂
+     * 查询⽇流⽔文件
      */
     const BILL_DOWNLOAD   = 'api/dataservice/v2/bill/downloadurl';
 
     /**
      * 查询商户充值记录
      */
-    const RECHARGE_RECORD = 'api/dataservice/v2/rechargerecord';
+    const RECHARGE_RECORD = 'api/dataservice/v2/recharge-record';
+
+    /**
+     * 查询日订单数据
+     */
+    const ORDER_RECORD    = 'api/dataservice/v1/orders';
+
+    /**
+     * 查询⽇订单⽂件 (打款和退款订单)
+     */
+    const ORDER_DAY       = 'api/dataservice/v1/order/day/url';
+
+    /**
+     *  查询⽇流⽔数据
+     */
+    const ORDER_BILLS     = 'api/dataservice/v1/bills';
 
 
     //+----------------------------------
@@ -108,26 +119,20 @@ class Router
      */
     const VERIFY_ID                    = 'authentication/verify-id';
 
+    /**
+     * 上传用户免验证名单信息
+     */
+    const WHITE_INFO_UPLOAD            = 'api/payment/v1/user/exempted/info';
 
     /**
      * 查看⽤户⽩名单是否存在
      */
     const USER_WHITE_CHECK             = 'api/payment/v1/user/white/check';
 
-
-    //+----------------------------------
-    //|  ⽤户签约接⼝
-    //+----------------------------------
-
     /**
-     * ⽤户签约信息上传
+     * 银行卡信息查询
      */
-    const SIGN_USER        = 'api/payment/v1/sign/user';
-    /**
-     * 获取⽤户签约状态
-     */
-    const SIGN_USER_STATUS = 'api/payment/v1/sign/user/status';
-
+    const BANK_INFO                    = 'api/payment/v1/card';
 
     //+----------------------------------
     //|  发票接⼝
@@ -135,8 +140,44 @@ class Router
     /**
      * 查询商户已开具发票⾦额和待开具发票⾦额
      */
-    const INVOICE_STAT     = 'api/payment/v1/invoice-stat';
+    const INVOICE_STAT       = 'api/payment/v1/invoice-stat';
 
+    /**
+     * 查询可开票额度
+     */
+    const INVOICE_AMOUNT     = 'api/invoice/v2/invoice-amount';
+    /**
+     * 开票申请
+     */
+    const INVOICE_APPLY      = 'api/invoice/v2/apply';
+
+    /**
+     * 查询开票申请状态
+     */
+    const INVOICE_APPLY_STATUS   = 'api/invoice/v2/invoice/invoice-status';
+
+    /**
+     * 下载发票PDF
+     */
+    const INVOICE_PDF            = 'api/invoice/v2/invoice/invoice-pdf';
+
+    /**
+     * 发送发票扫描件压缩包下载链接邮件
+     */
+    const INVOICE_REMINDER_EMAIL = 'api/invoice/v2/invoice/reminder/email';
+
+    //+----------------------------------
+    //|  个税扣缴明细表下载接口
+    //+----------------------------------
+    /**
+     * 下载个税扣缴明细表
+     */
+    const TAX_DOWNLOAD           = 'api/tax/v1/taxfile/download';
+
+    /**
+     * 查询纳税⼈是否为跨集团⽤户
+     */
+    const TAX_CROSS              = 'api/tax/v1/user/cross';
 
     public static function getRouter(string $route = ''): string
     {
