@@ -33,6 +33,7 @@ class BankPayData extends BaseData
 
     /**
      * 收款⼈id(选填)
+     * @deprecated
      * @var
      */
     public $anchor_id;
