@@ -179,6 +179,30 @@ class Router
      */
     const TAX_CROSS              = 'api/tax/v1/user/cross';
 
+    //+----------------------------------
+    //|  h5签约相关接口
+    //+----------------------------------
+    /**
+     * H5 预申请签约接口
+     */
+    const PRE_SIGN      = 'api/sdk/v1/presign';
+
+    /**
+     * H5 签约接口
+     */
+    const H5_SIGN       = 'api/sdk/v1/sign/h5';
+
+    /**
+     * 获取用户签约状态
+     */
+    const SIGN_STATUS   = 'api/sdk/v1/sign/user/status';
+
+    /**
+     * H5 对接测试解约接口
+     */
+    const TEST_RESCIND  = 'api/sdk/v1/sign/release';
+
+
     public static function getRouter(string $route = ''): string
     {
         return self::SERVICE_URL . '/' . $route;
