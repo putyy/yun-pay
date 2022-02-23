@@ -118,7 +118,7 @@ class RsaUtil
             'timestamp' => $response['timestamp'],
             'key'       => $this->config->app_key,
         ];
-        return (bool)openssl_verify(http_build_query($signData), base64_decode($response['sign']), $this->getPublicKey(), 'SHA256');
+        return (bool)openssl_verify(urldecode(http_build_query($signData)), base64_decode($response['sign']), $this->getPublicKey(), 'SHA256');
     }
 
     /**

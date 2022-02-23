@@ -14,6 +14,7 @@
 
 namespace WGCYunPay\Service;
 
+use WGCYunPay\AbstractInterfaceTrait\AttributeSetGetTrait;
 use WGCYunPay\AbstractInterfaceTrait\BaseService;
 use WGCYunPay\AbstractInterfaceTrait\DataHandleTrait;
 use WGCYunPay\AbstractInterfaceTrait\MethodTypeTrait;
@@ -175,6 +176,8 @@ class AuthenticationService extends BaseService
 
 
     use MethodTypeTrait;
+
+    use AttributeSetGetTrait;
 
     use DataHandleTrait;
 
