@@ -13,6 +13,7 @@ namespace WGCYunPay\Util;
 
 use WGCYunPay\Config;
 use WGCYunPay\Exception\YunPayException;
+use OpenSSLAsymmetricKey;
 
 class RsaUtil
 {
@@ -91,16 +92,28 @@ class RsaUtil
      * @return string
      * @throws YunPayException
      */
-    public function sign(array $data)
+    public function sign(array $data): string
     {
         $sign = '';
         $res  = openssl_get_privatekey($this->getPrivateKey());
         if ($res) {
             openssl_sign(urldecode(http_build_query($data)), $sign, $res, 'SHA256');
-            openssl_free_key($res);
+            $this->freeKey($res);
             return base64_encode($sign);
         }
         YunPayException::throwSelf('私钥格式有误');
+    }
+
+    /**
+     * @param resource|OpenSSLAsymmetricKey $key
+     */
+    private function freeKey($key): void
+    {
+        if ($key instanceof OpenSSLAsymmetricKey) {
+            return;
+        }
+
+        openssl_free_key($key); // Deprecated and no longer necessary as of PHP >= 8.0
     }
 
     /**
